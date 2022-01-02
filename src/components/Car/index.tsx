@@ -25,20 +25,20 @@ type Car = {
 };
 
 type CarProps = {
-  car: Car;
+  data: Car;
 };
 
-export function Car({ car }: CarProps) {
+export function Car({ data }: CarProps) {
   return (
     <Container>
       <Details>
-        <Brand>{car.brand}</Brand>
-        <Name>{car.name}</Name>
+        <Brand>{data.brand}</Brand>
+        <Name>{data.name}</Name>
 
         <About>
           <Rent>
             <Period>Ao dia</Period>
-            <Price>{`R$ ${car.rent.price}`}</Price>
+            <Price>{`R$ ${data.rent.price}`}</Price>
           </Rent>
 
           <Type>
@@ -48,7 +48,7 @@ export function Car({ car }: CarProps) {
       </Details>
       <CarImage
         source={{
-          uri: car.thumbnail,
+          uri: data.thumbnail,
         }}
         resizeMode="contain"
       />
