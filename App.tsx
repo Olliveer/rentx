@@ -1,22 +1,18 @@
-import React from 'react';
-import {
-  useFonts,
-  Inter_400Regular,
-  Inter_500Medium,
-} from '@expo-google-fonts/inter';
 import {
   Archivo_400Regular,
   Archivo_500Medium,
   Archivo_600SemiBold,
 } from '@expo-google-fonts/archivo';
-import { Home } from './src/screens/Home';
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  useFonts,
+} from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { Routes } from './src/routes';
 import theme from './src/styles/theme';
-import { CarDetails } from './src/screens/CarDetails';
-import { Schedule } from './src/screens/Schedule';
-import { ScheduleDetails } from './src/screens/ScheduleDetails';
-import { SchedulingComplete } from './src/screens/SchedulingComplete';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -33,7 +29,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <SchedulingComplete />
+      <Routes />
     </ThemeProvider>
   );
 }

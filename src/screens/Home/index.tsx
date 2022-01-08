@@ -1,13 +1,13 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StatusBar } from 'react-native';
-
-import { Container, Header, TotalCars, HeaderContent, CarList } from './styles';
-
-import Logo from '../../assets/logo.svg';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Logo from '../../assets/logo.svg';
 import { Car } from '../../components/Car';
+import { CarList, Container, Header, HeaderContent, TotalCars } from './styles';
 
 export function Home() {
+  const navigation = useNavigation();
   const carData1 = {
     brand: 'audi',
     name: 'RS6 coupé',
@@ -30,6 +30,10 @@ export function Home() {
       'https://freebiescloud.com/wp-content/uploads/2021/03/Audi-RS6-Avant-2021-1.png',
   };
 
+  function handleCarDetails() {
+    navigation.navigate('CarDetails');
+  }
+
   return (
     <Container>
       <StatusBar
@@ -47,7 +51,9 @@ export function Home() {
       <CarList
         data={[1, 2, 3, 4, 5, 6, 7]}
         keyExtractor={(item) => String(item)}
-        renderItem={({ item }) => <Car data={carData1} />}
+        renderItem={({ item }) => (
+          <Car data={carData1} onPress={handleCarDetails} />
+        )}
       />
     </Container>
   );

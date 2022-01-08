@@ -13,6 +13,7 @@ import {
 } from './styles';
 
 import GasolineSvg from '../../assets/gasoline.svg';
+import { RectButtonProps } from 'react-native-gesture-handler';
 
 type Car = {
   brand: string;
@@ -24,13 +25,13 @@ type Car = {
   thumbnail: string;
 };
 
-type CarProps = {
+type CarProps = RectButtonProps & {
   data: Car;
 };
 
-export function Car({ data }: CarProps) {
+export function Car({ data, ...rest }: CarProps) {
   return (
-    <Container>
+    <Container {...rest}>
       <Details>
         <Brand>{data.brand}</Brand>
         <Name>{data.name}</Name>

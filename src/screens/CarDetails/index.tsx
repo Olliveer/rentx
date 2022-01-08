@@ -27,8 +27,15 @@ import {
   Acessories,
   Footer,
 } from './styles';
+import { useNavigation } from '@react-navigation/native';
 
 export function CarDetails() {
+  const navigation = useNavigation();
+
+  function handleConfirmRental() {
+    navigation.navigate('Schedule');
+  }
+
   return (
     <Container>
       <Header>
@@ -73,7 +80,10 @@ export function CarDetails() {
       </Content>
 
       <Footer>
-        <Button title="Confirmar" />
+        <Button
+          title="Escolher período do aluguel"
+          onPress={handleConfirmRental}
+        />
       </Footer>
     </Container>
   );
