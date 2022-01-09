@@ -38,7 +38,7 @@ const CarList = styled(
   },
   showsVerticalScrollIndicator: false,
 })`
-  margin: 10px;
+  margin: 15px;
 `;
 
 export { Container, Header, TotalCars, HeaderContent, CarList };

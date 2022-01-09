@@ -84,7 +84,7 @@ const About = styled.Text`
   line-height: ${RFValue(25)}px;
 `;
 
-const Acessories = styled.View`
+const Accessories = styled.View`
   width: 100%;
 
   flex-direction: row;
@@ -115,6 +115,6 @@ export {
   Period,
   Price,
   About,
-  Acessories,
+  Accessories,
   Footer,
 };
