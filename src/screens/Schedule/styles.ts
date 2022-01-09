@@ -26,6 +26,7 @@ const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.secondary_600};
   color: ${({ theme }) => theme.colors.shape};
   font-size: ${RFValue(34)}px;
+  margin-top: 10px;
 `;
 
 const DateInfo = styled.View`
