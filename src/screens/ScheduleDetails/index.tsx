@@ -39,6 +39,7 @@ import { format, parseISO } from 'date-fns';
 import { getPlataformDate } from '../../utils/getPlataformDate';
 import { api } from '../../services/api';
 import { Alert } from 'react-native';
+import { Load } from '../../components/Load';
 
 type Params = {
   car: CarDTO;
@@ -54,6 +55,7 @@ export function ScheduleDetails() {
   const [rentalPeriod, setRentalPeriod] = useState<RentalPeriodProps>(
     {} as RentalPeriodProps
   );
+  const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
@@ -62,6 +64,7 @@ export function ScheduleDetails() {
   const rentalTotal = Number(dates.length) * car.rent.price;
 
   async function handleConfirm() {
+    setLoading(true);
     const response = await api.get(`/schedules_bycars/${car.id}`);
 
     const unavailable_dates = [...response.data.unavailable_dates, ...dates];
@@ -79,7 +82,10 @@ export function ScheduleDetails() {
     api
       .put(`/schedules_bycars/${car.id}`, { id: car.id, unavailable_dates })
       .then(() => navigation.navigate('SchedulingComplete'))
-      .catch(() => Alert.alert('Erro ao reservar o carro'));
+      .catch(() => {
+        setLoading(false);
+        Alert.alert('Erro ao reservar o carro');
+      });
   }
 
   function handleBack() {
@@ -168,9 +174,11 @@ export function ScheduleDetails() {
 
       <Footer>
         <Button
+          loading={loading}
           color={theme.colors.success}
           title="Alugar agora"
           onPress={handleConfirm}
+          enabled={!loading}
         />
       </Footer>
     </Container>
