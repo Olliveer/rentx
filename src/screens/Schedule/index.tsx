@@ -15,15 +15,27 @@ import {
 
 import ArrowSvg from '../../assets/arrow.svg';
 
-import { StatusBar } from 'react-native';
+import { Alert, StatusBar } from 'react-native';
 import { Button } from '../../components/Button';
 import {
   Calendar,
   DayProps,
   MarkedDatesProps,
 } from '../../components/Calendar';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { generateInterval } from '../../components/Calendar/generateInterval';
+import { format, parseISO } from 'date-fns';
+import { getPlataformDate } from '../../utils/getPlataformDate';
+import { CarDTO } from '../../dtos/CarDTO';
+
+type RentalPeriodProps = {
+  startFormatted: string;
+  endFormatted: string;
+};
+
+type Params = {
+  car: CarDTO;
+};
 
 export function Schedule() {
   const [lastSelectedDate, setLastSelectedDate] = useState<DayProps>(
@@ -32,11 +44,20 @@ export function Schedule() {
   const [markedDates, setMarkedDates] = useState<MarkedDatesProps>(
     {} as MarkedDatesProps
   );
+  const [rentalPeriod, setRentalPeriod] = useState<RentalPeriodProps>();
   const theme = useTheme();
   const navigation = useNavigation();
+  const route = useRoute();
+  const { car } = route.params as Params;
 
   function handleConfirmRental() {
-    navigation.navigate('ScheduleDetails');
+    if (!rentalPeriod?.startFormatted || !rentalPeriod?.endFormatted) {
+      return Alert.alert('Selecione um período para a locação');
+    }
+    navigation.navigate('ScheduleDetails', {
+      car,
+      dates: Object.keys(markedDates),
+    });
   }
 
   function handleBack() {
@@ -55,6 +76,17 @@ export function Schedule() {
     setLastSelectedDate(end);
     const interval = generateInterval(start, end);
     setMarkedDates(interval);
+
+    const firstDate = Object.keys(interval)[0];
+    const endDate = Object.keys(interval)[Object.keys(interval).length - 1];
+
+    setRentalPeriod({
+      startFormatted: format(
+        getPlataformDate(parseISO(firstDate)),
+        'dd/MM/yyyy'
+      ),
+      endFormatted: format(parseISO(endDate), 'dd/MM/yyyy'),
+    });
   }
 
   return (
@@ -74,14 +106,18 @@ export function Schedule() {
         <RentalPeriod>
           <DateInfo>
             <DateTitle>DE</DateTitle>
-            <DateValue selected={false}>18/06/2021</DateValue>
+            <DateValue selected={!!rentalPeriod?.startFormatted}>
+              {rentalPeriod?.startFormatted}
+            </DateValue>
           </DateInfo>
 
           <ArrowSvg />
 
           <DateInfo>
             <DateTitle>ATÉ </DateTitle>
-            <DateValue selected={false}>18/06/2021</DateValue>
+            <DateValue selected={!!rentalPeriod?.endFormatted}>
+              {rentalPeriod?.endFormatted}
+            </DateValue>
           </DateInfo>
         </RentalPeriod>
       </Header>

@@ -12,8 +12,8 @@ export type RootStackParamList = {
   Home: undefined;
   CarDetails: { car: CarDTO };
   SchedulingComplete: undefined;
-  Schedule: undefined;
-  ScheduleDetails: undefined;
+  Schedule: { car: CarDTO };
+  ScheduleDetails: { car: CarDTO; dates: string[] };
 };
 
 const { Navigator, Screen } = createStackNavigator<RootStackParamList>();
