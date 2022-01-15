@@ -81,7 +81,6 @@ export function CarDetails() {
         <Button
           title="Escolher período do aluguel"
           onPress={handleConfirmRental}
-          enabled={true}
           loading={false}
         />
       </Footer>
