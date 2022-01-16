@@ -1,27 +1,27 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StatusBar } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
 import { useTheme } from 'styled-components';
 import { BackButton } from '../../components/BackButton';
 import { Car } from '../../components/Car';
-import { Load } from '../../components/Load';
+import { LoadAnimation } from '../../components/LoadAnimation';
 import { CarDTO } from '../../dtos/CarDTO';
 import { api } from '../../services/api';
 import {
-  Container,
-  Header,
-  Title,
-  SubTitle,
-  Content,
+  AppointmentQuantity,
   Appointments,
   AppointmentTitle,
-  AppointmentQuantity,
-  CarWrapper,
   CarFooter,
-  CarFooterTitle,
-  CarFooterPeriod,
   CarFooterDate,
+  CarFooterPeriod,
+  CarFooterTitle,
+  CarWrapper,
+  Container,
+  Content,
+  Header,
+  SubTitle,
+  Title,
 } from './styles';
 
 type CarProps = {
@@ -78,7 +78,7 @@ export function MyCars() {
         </Appointments>
 
         {loading ? (
-          <Load />
+          <LoadAnimation />
         ) : (
           <FlatList
             data={cars}

@@ -31,7 +31,13 @@ export function StackRoutes() {
       initialRouteName="Splash"
     >
       <Screen name="Splash" component={Splash} />
-      <Screen name="Home" component={Home} />
+      <Screen
+        options={{
+          gestureEnabled: false,
+        }}
+        name="Home"
+        component={Home}
+      />
       <Screen name="CarDetails" component={CarDetails} />
       <Screen name="SchedulingComplete" component={SchedulingComplete} />
       <Screen name="Schedule" component={Schedule} />

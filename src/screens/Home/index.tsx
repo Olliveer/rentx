@@ -7,16 +7,16 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { StatusBar, StyleSheet } from 'react-native';
+import { BackHandler, StatusBar, StyleSheet } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Logo from '../../assets/logo.svg';
 import { Car } from '../../components/Car';
-import { Load } from '../../components/Load';
 import { CarDTO } from '../../dtos/CarDTO';
 import { api } from '../../services/api';
 import { CarList, Container, Header, HeaderContent, TotalCars } from './styles';
 import { useTheme } from 'styled-components';
 import { PanGestureHandler, RectButton } from 'react-native-gesture-handler';
+import { LoadAnimation } from '../../components/LoadAnimation';
 
 const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
 
@@ -57,6 +57,14 @@ export function Home() {
     },
   });
 
+  function handleCarDetails(car: CarDTO) {
+    navigation.navigate('CarDetails', { car });
+  }
+
+  function handleOpenMyCars() {
+    navigation.navigate('MyCars');
+  }
+
   useEffect(() => {
     async function loadCars() {
       try {
@@ -72,13 +80,11 @@ export function Home() {
     loadCars();
   }, []);
 
-  function handleCarDetails(car: CarDTO) {
-    navigation.navigate('CarDetails', { car });
-  }
-
-  function handleOpenMyCars() {
-    navigation.navigate('MyCars');
-  }
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      return true;
+    });
+  }, []);
 
   return (
     <Container>
@@ -90,12 +96,12 @@ export function Home() {
       <Header>
         <HeaderContent>
           <Logo width={RFValue(108)} height={RFValue(12)} />
-          <TotalCars>Total de {cars?.length} carros</TotalCars>
+          {!loading && <TotalCars>Total de {cars?.length} carros</TotalCars>}
         </HeaderContent>
       </Header>
 
       {loading ? (
-        <Load />
+        <LoadAnimation />
       ) : (
         <CarList
           data={cars}
