@@ -9,9 +9,11 @@ import { ScheduleDetails } from '../screens/ScheduleDetails';
 import { CarDTO } from '../dtos/CarDTO';
 import { MyCars } from '../screens/MyCars';
 import { Splash } from '../screens/Splash';
+import { SignIn } from '../screens/signIn';
 
 export type RootStackParamList = {
   Home: undefined;
+  SignIn: undefined;
   CarDetails: { car: CarDTO };
   SchedulingComplete: undefined;
   Schedule: { car: CarDTO };
@@ -28,9 +30,9 @@ export function StackRoutes() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="Splash"
+      initialRouteName="SignIn"
     >
-      <Screen name="Splash" component={Splash} />
+      <Screen name="SignIn" component={SignIn} />
       <Screen
         options={{
           gestureEnabled: false,

@@ -17,6 +17,7 @@ import { CarList, Container, Header, HeaderContent, TotalCars } from './styles';
 import { useTheme } from 'styled-components';
 import { PanGestureHandler, RectButton } from 'react-native-gesture-handler';
 import { LoadAnimation } from '../../components/LoadAnimation';
+import { Load } from '../../components/Load';
 
 const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
 
@@ -101,7 +102,7 @@ export function Home() {
       </Header>
 
       {loading ? (
-        <LoadAnimation />
+        <Load />
       ) : (
         <CarList
           data={cars}
