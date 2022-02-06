@@ -9,6 +9,7 @@ type InputeProps = {
 
 const Container = styled.View`
   flex-direction: row;
+  margin-bottom: 8px;
 `;
 
 const IconContainer = styled.View<InputeProps>`
