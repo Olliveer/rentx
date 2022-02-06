@@ -3,7 +3,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Home } from '../screens/Home';
 import { CarDetails } from '../screens/CarDetails';
-import { SchedulingComplete } from '../screens/SchedulingComplete';
+import { Confirmation } from '../screens/Confirmation';
 import { Schedule } from '../screens/Schedule';
 import { ScheduleDetails } from '../screens/ScheduleDetails';
 import { CarDTO } from '../dtos/CarDTO';
@@ -18,7 +18,7 @@ export type RootStackParamList = {
   Home: undefined;
   SignIn: undefined;
   CarDetails: { car: CarDTO };
-  SchedulingComplete: undefined;
+  Confirmation: { title: string; message: string; nextScreenRoute: string };
   Schedule: { car: CarDTO };
   ScheduleDetails: { car: CarDTO; dates: string[] };
   MyCars: undefined;
@@ -48,7 +48,7 @@ export function StackRoutes() {
         component={Home}
       />
       <Screen name="CarDetails" component={CarDetails} />
-      <Screen name="SchedulingComplete" component={SchedulingComplete} />
+      <Screen name="Confirmation" component={Confirmation} />
       <Screen name="Schedule" component={Schedule} />
       <Screen name="ScheduleDetails" component={ScheduleDetails} />
       <Screen name="MyCars" component={MyCars} />

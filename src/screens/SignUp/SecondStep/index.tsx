@@ -52,6 +52,11 @@ export function SecondStep() {
 
       Alert.alert('Sucesso');
       console.log({ user, password });
+      navigation.navigate('Confirmation', {
+        title: 'Conta criada!',
+        message: 'Agora é só fazer\n login',
+        nextScreenRoute: 'SignIn',
+      });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('Ops!', error.message);

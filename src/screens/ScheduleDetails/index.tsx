@@ -81,7 +81,13 @@ export function ScheduleDetails() {
 
     api
       .put(`/schedules_bycars/${car.id}`, { id: car.id, unavailable_dates })
-      .then(() => navigation.navigate('SchedulingComplete'))
+      .then(() =>
+        navigation.navigate('Confirmation', {
+          title: 'Carro alugado!',
+          message: 'Agora você só precisa ir\n até a concessionária da RENTX',
+          nextScreenRoute: 'Home',
+        })
+      )
       .catch(() => {
         setLoading(false);
         Alert.alert('Erro ao reservar o carro');
