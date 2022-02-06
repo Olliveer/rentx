@@ -9,7 +9,7 @@ import { ScheduleDetails } from '../screens/ScheduleDetails';
 import { CarDTO } from '../dtos/CarDTO';
 import { MyCars } from '../screens/MyCars';
 import { Splash } from '../screens/Splash';
-import { SignIn } from '../screens/signIn';
+import { SignIn } from '../screens/SignIn';
 
 export type RootStackParamList = {
   Home: undefined;
