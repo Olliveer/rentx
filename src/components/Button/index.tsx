@@ -5,11 +5,11 @@ import { useTheme } from 'styled-components';
 import { Load } from '../Load';
 import { Container, Title } from './styles';
 
-type ButtonProps = {
+type ButtonProps = RectButtonProps & {
   title: string;
   color?: string;
-  onPress: () => void;
-  enabled?: boolean;
+  // onPress: () => void;
+  // enabled?: boolean;
   loading?: boolean;
   light?: boolean;
 };
