@@ -5,7 +5,7 @@ import { FlatList, StatusBar } from 'react-native';
 import { useTheme } from 'styled-components';
 import { BackButton } from '../../components/BackButton';
 import { Car } from '../../components/Car';
-import { LoadAnimation } from '../../components/LoadAnimation';
+import { Load } from '../../components/Load';
 import { CarDTO } from '../../dtos/CarDTO';
 import { api } from '../../services/api';
 import {
@@ -78,7 +78,7 @@ export function MyCars() {
         </Appointments>
 
         {loading ? (
-          <LoadAnimation />
+          <Load />
         ) : (
           <FlatList
             data={cars}
