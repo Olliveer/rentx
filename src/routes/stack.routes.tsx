@@ -12,6 +12,7 @@ import { Splash } from '../screens/Splash';
 import { SignIn } from '../screens/SignIn';
 import { FirstStep } from '../screens/SignUp/FirstStep';
 import { SecondStep } from '../screens/SignUp/SecondStep';
+import { User } from '../dtos/UserDTO';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -23,7 +24,7 @@ export type RootStackParamList = {
   MyCars: undefined;
   Splash: undefined;
   FirstStep: undefined;
-  SecondStep: undefined;
+  SecondStep: { user: User };
 };
 
 const { Navigator, Screen } = createStackNavigator<RootStackParamList>();

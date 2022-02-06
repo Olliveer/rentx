@@ -1,30 +1,66 @@
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Keyboard, KeyboardAvoidingView } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { Alert, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useTheme } from 'styled-components';
+import * as Yup from 'yup';
 import { BackButton } from '../../../components/BackButton';
 import { Bullet } from '../../../components/Bullet';
 import { Button } from '../../../components/Button';
-import { Input } from '../../../components/Input';
 import { PasswordInput } from '../../../components/PasswordInput';
+import { User } from '../../../dtos/UserDTO';
 import {
   Container,
-  Header,
-  Steps,
-  Title,
-  SubTitle,
   Form,
   FormTitle,
+  Header,
+  Steps,
+  SubTitle,
+  Title,
 } from './styles';
 
+type Params = {
+  user: User;
+};
+
 export function SecondStep() {
+  const route = useRoute();
   const theme = useTheme();
   const navigation = useNavigation();
+  const { user } = route.params as Params;
+  const [password, setPassword] = useState('');
+  const [passwordConfimartion, setPasswordConfirmation] = useState('');
 
   function handleBack() {
     navigation.goBack();
   }
+
+  async function handleRegister() {
+    try {
+      const schema = Yup.object().shape({
+        password: Yup.string().required('Password required'),
+        passwordConfimartion: Yup.string().oneOf(
+          [Yup.ref('password'), null],
+          'Passwords must match'
+        ),
+      });
+
+      await schema.validate(
+        { password, passwordConfimartion },
+        { abortEarly: false }
+      );
+
+      Alert.alert('Sucesso');
+      console.log({ user, password });
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        Alert.alert('Ops!', error.message);
+      } else {
+        Alert.alert('Ops!', 'Something went wrong');
+      }
+    }
+  }
+
   return (
     <KeyboardAvoidingView behavior="position" enabled>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -47,11 +83,25 @@ export function SecondStep() {
           <Form>
             <FormTitle>2. Senha</FormTitle>
 
-            <PasswordInput iconName="lock" placeholder="Senha" />
-            <PasswordInput iconName="lock" placeholder="Repetir senha" />
+            <PasswordInput
+              iconName="lock"
+              placeholder="Senha"
+              value={password}
+              onChangeText={setPassword}
+            />
+            <PasswordInput
+              iconName="lock"
+              placeholder="Repetir senha"
+              value={passwordConfimartion}
+              onChangeText={setPasswordConfirmation}
+            />
           </Form>
 
-          <Button title="Cadastrar" color={theme.colors.success} />
+          <Button
+            title="Cadastrar"
+            color={theme.colors.success}
+            onPress={handleRegister}
+          />
         </Container>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
