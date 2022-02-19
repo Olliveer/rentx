@@ -27,7 +27,7 @@ export function Splash() {
             splashAnimation.value,
             [0, 50],
             [0, -50],
-            Extrapolate.CLAMP
+            Extrapolate.CLAMP,
           ),
         },
       ],
@@ -43,7 +43,7 @@ export function Splash() {
             splashAnimation.value,
             [0, 50],
             [-50, 0],
-            Extrapolate.CLAMP
+            Extrapolate.CLAMP,
           ),
         },
       ],
@@ -51,7 +51,7 @@ export function Splash() {
   });
 
   function startApp() {
-    navigation.navigate('Home');
+    navigation.navigate('SignIn');
   }
 
   useEffect(() => {

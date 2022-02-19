@@ -1,7 +1,7 @@
 type User = {
   name: string;
   email: string;
-  cnh: string;
+  driverLicense: string;
 };
 
 export { User };

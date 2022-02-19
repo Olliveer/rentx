@@ -9,6 +9,7 @@ import { Bullet } from '../../../components/Bullet';
 import { Button } from '../../../components/Button';
 import { PasswordInput } from '../../../components/PasswordInput';
 import { User } from '../../../dtos/UserDTO';
+import { api } from '../../../services/api';
 import {
   Container,
   Form,
@@ -41,22 +42,32 @@ export function SecondStep() {
         password: Yup.string().required('Password required'),
         passwordConfimartion: Yup.string().oneOf(
           [Yup.ref('password'), null],
-          'Passwords must match'
+          'Passwords must match',
         ),
       });
 
       await schema.validate(
         { password, passwordConfimartion },
-        { abortEarly: false }
+        { abortEarly: false },
       );
 
-      Alert.alert('Sucesso');
-      console.log({ user, password });
-      navigation.navigate('Confirmation', {
-        title: 'Conta criada!',
-        message: 'Agora é só fazer\n login',
-        nextScreenRoute: 'SignIn',
-      });
+      await api
+        .post('/users', {
+          name: user.name,
+          email: user.email,
+          driver_license: user.driverLicense,
+          password,
+        })
+        .then(() => {
+          navigation.navigate('Confirmation', {
+            title: 'Conta criada!',
+            message: 'Agora é só fazer\n login',
+            nextScreenRoute: 'SignIn',
+          });
+        })
+        .catch(() => {
+          Alert.alert('Ops!', 'Something went wrong');
+        });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('Ops!', error.message);

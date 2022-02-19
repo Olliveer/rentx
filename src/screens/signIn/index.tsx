@@ -8,9 +8,11 @@ import { PasswordInput } from '../../components/PasswordInput';
 import { Container, Header, Title, SubTitle, Form, Footer } from './styles';
 import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../hooks/useAuth';
 
 export function SignIn() {
   const theme = useTheme();
+  const { signIn } = useAuth();
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +27,8 @@ export function SignIn() {
       });
 
       await schema.validate({ email, password }, { abortEarly: false });
+
+      signIn({ email, password });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('Ops!', error.message);

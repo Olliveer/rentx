@@ -21,7 +21,7 @@ export function FirstStep() {
   const navigation = useNavigation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [cnh, setCnh] = useState('');
+  const [driverLicense, setDriverLicense] = useState('');
 
   function handleBack() {
     navigation.goBack();
@@ -37,7 +37,7 @@ export function FirstStep() {
         name: Yup.string().required('Name required'),
       });
 
-      const data = { name, email, cnh };
+      const data = { name, email, driverLicense };
 
       await schema.validate(data);
 
@@ -90,8 +90,8 @@ export function FirstStep() {
               iconName="credit-card"
               placeholder="CNH"
               keyboardType="numeric"
-              value={cnh}
-              onChangeText={setCnh}
+              value={driverLicense}
+              onChangeText={setDriverLicense}
             />
           </Form>
 
