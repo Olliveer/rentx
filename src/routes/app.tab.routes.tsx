@@ -11,7 +11,7 @@ import { useTheme } from 'styled-components';
 import { Platform } from 'react-native';
 
 export type RootStackParamList = {
-  Home: undefined;
+  HomeTab: undefined;
   Profile: undefined;
   MyCars: undefined;
 };
@@ -36,7 +36,7 @@ export function AppTabRoutes() {
       }}
     >
       <Screen
-        name="Home"
+        name="HomeTab"
         component={AppStackRoutes}
         options={{
           tabBarIcon: ({ color }) => (

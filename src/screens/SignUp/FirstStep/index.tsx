@@ -30,7 +30,7 @@ export function FirstStep() {
   async function goToSecondStep() {
     try {
       const schema = Yup.object().shape({
-        cnh: Yup.string().required('CNH required'),
+        driverLicense: Yup.string().required('CNH is required'),
         email: Yup.string()
           .required('Email is required')
           .email('Type a valid email'),
