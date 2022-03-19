@@ -12,7 +12,6 @@ type OptionProps = {
 };
 
 const Container = styled.View`
-  flex: 1;
   background-color: ${({ theme }) => theme.colors.background_primary};
 `;
 
@@ -72,7 +71,6 @@ const PhotoButton = styled(RectButton)`
 `;
 
 const Content = styled.View`
-  flex: 1;
   padding: 0px 24px;
   margin-top: 122px;
 `;
@@ -105,6 +103,8 @@ const OptionTitle = styled.Text<OptionProps>`
     active ? theme.colors.header : theme.colors.text_detail};
 `;
 
+const Section = styled.View``;
+
 export {
   Container,
   Header,
@@ -118,4 +118,5 @@ export {
   Options,
   Option,
   OptionTitle,
+  Section,
 };
