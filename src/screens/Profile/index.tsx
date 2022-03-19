@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTheme } from 'styled-components';
 import { BackButton } from '../../components/BackButton';
 import { Feather } from '@expo/vector-icons';
-
+import * as ImagePicker from 'expo-image-picker';
 import {
   Container,
   Header,
@@ -35,6 +35,9 @@ function Profile() {
   const navigation = useNavigation();
 
   const [option, setOption] = useState<'dataEdit' | 'passwordEdit'>('dataEdit');
+  const [avatar, setAvatar] = useState(user.avatar);
+  const [name, setName] = useState(user.name);
+  const [driveLicense, setDriverLicense] = useState(user.driver_license);
 
   function handleBack() {
     navigation.goBack();
@@ -44,6 +47,23 @@ function Profile() {
 
   function handleOptionChange(optionSelected: 'dataEdit' | 'passwordEdit') {
     setOption(optionSelected);
+  }
+
+  async function handleAvatarSelect() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (result.cancelled) {
+      return;
+    }
+
+    if (result.uri) {
+      setAvatar(result.uri);
+    }
   }
 
   return (
@@ -60,8 +80,8 @@ function Profile() {
             </HeaderTop>
 
             <PhotoContainer>
-              <Photo source={{ uri: 'https://github.com/olliveer.png' }} />
-              <PhotoButton onPress={() => {}}>
+              {!!avatar && <Photo source={{ uri: avatar }} />}
+              <PhotoButton onPress={handleAvatarSelect}>
                 <Feather name="camera" size={24} color={theme.colors.shape} />
               </PhotoButton>
             </PhotoContainer>
@@ -94,6 +114,7 @@ function Profile() {
               <Section>
                 <Input
                   defaultValue={user.name}
+                  onChangeText={setName}
                   iconName="user"
                   placeholder="Nome"
                   autoCorrect={false}
@@ -106,6 +127,7 @@ function Profile() {
                 />
                 <Input
                   defaultValue={user.driver_license}
+                  onChangeText={setDriverLicense}
                   iconName="credit-card"
                   placeholder="CNH"
                   keyboardType="numeric"

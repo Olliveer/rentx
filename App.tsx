@@ -10,6 +10,7 @@ import {
 } from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
 import React from 'react';
+import Toast from 'react-native-toast-message';
 import { ThemeProvider } from 'styled-components';
 import { AppProvider } from './src/hooks';
 import { Routes } from './src/routes';
@@ -33,6 +34,7 @@ export default function App() {
       <AppProvider>
         <Routes />
       </AppProvider>
+      <Toast />
     </ThemeProvider>
   );
 }
