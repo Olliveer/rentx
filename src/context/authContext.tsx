@@ -21,6 +21,7 @@ type SignInCredentials = {
 type AuthContextData = {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
+  signOut(): Promise<void>;
 };
 
 type AuthProviderProps = {
@@ -44,7 +45,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       const userCollection = database.get<UserModel>('users');
       await database.write(async () => {
-        await userCollection.create((newUser) => {
+        const dataUser = await userCollection.create((newUser) => {
           (newUser.user_id = user.id),
             (newUser.name = user.name),
             (newUser.email = user.email),
@@ -52,13 +53,28 @@ function AuthProvider({ children }: AuthProviderProps) {
             (newUser.avatar = user.avatar),
             (newUser.token = token);
         });
-      });
 
-      setData({ ...user, token });
+        const userData = dataUser._raw as unknown as User;
+        setData(userData);
+      });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error('Opsss! Something went wrong', error);
       }
+    }
+  }
+
+  async function signOut() {
+    try {
+      const userCollection = database.get<UserModel>('users');
+      await database.write(async () => {
+        const userSelected = await userCollection.find(data.id);
+        await userSelected.destroyPermanently();
+      });
+
+      setData({} as User);
+    } catch (error: any | unknown) {
+      throw new Error('Opsss! Something went wrong', error);
     }
   }
 
@@ -80,7 +96,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data, signIn }}>
+    <AuthContext.Provider value={{ user: data, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

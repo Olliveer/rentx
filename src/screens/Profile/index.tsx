@@ -31,7 +31,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 function Profile() {
   const theme = useTheme();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigation = useNavigation();
 
   const [option, setOption] = useState<'dataEdit' | 'passwordEdit'>('dataEdit');
@@ -42,8 +42,6 @@ function Profile() {
   function handleBack() {
     navigation.goBack();
   }
-
-  function handleSignOut() {}
 
   function handleOptionChange(optionSelected: 'dataEdit' | 'passwordEdit') {
     setOption(optionSelected);
@@ -74,7 +72,7 @@ function Profile() {
             <HeaderTop>
               <BackButton color={theme.colors.shape} onPress={handleBack} />
               <HeaderTitle>Editar perfil</HeaderTitle>
-              <LogoutButton onPress={handleSignOut}>
+              <LogoutButton onPress={signOut}>
                 <Feather name="power" size={24} color={theme.colors.shape} />
               </LogoutButton>
             </HeaderTop>
