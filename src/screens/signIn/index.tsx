@@ -9,6 +9,7 @@ import { Container, Header, Title, SubTitle, Form, Footer } from './styles';
 import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../hooks/useAuth';
+import Toast from 'react-native-toast-message';
 
 export function SignIn() {
   const theme = useTheme();
@@ -31,7 +32,12 @@ export function SignIn() {
       signIn({ email, password });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
-        Alert.alert('Ops!', error.message);
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Opsss 😅',
+          text2: error.message,
+        });
       } else {
         Alert.alert('Ops!', 'Something went wrong');
       }

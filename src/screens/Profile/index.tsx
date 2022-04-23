@@ -4,6 +4,7 @@ import { useTheme } from 'styled-components';
 import { BackButton } from '../../components/BackButton';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as Yup from 'yup';
 import {
   Container,
   Header,
@@ -21,22 +22,26 @@ import {
 } from './styles';
 import { Input } from '../../components/Input';
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { PasswordInput } from '../../components/PasswordInput';
 import { useAuth } from '../../hooks/useAuth';
+import { Button } from '../../components/Button';
 
 function Profile() {
   const theme = useTheme();
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateUser } = useAuth();
   const navigation = useNavigation();
 
   const [option, setOption] = useState<'dataEdit' | 'passwordEdit'>('dataEdit');
   const [avatar, setAvatar] = useState(user.avatar);
   const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
   const [driveLicense, setDriverLicense] = useState(user.driver_license);
 
   function handleBack() {
@@ -61,6 +66,48 @@ function Profile() {
 
     if (result.uri) {
       setAvatar(result.uri);
+    }
+  }
+
+  async function handleProfileUpdate() {
+    try {
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        driveLicense: Yup.string().required('CNH obrigatório'),
+      });
+
+      const data = { name, driveLicense };
+
+      await schema.validate(data);
+
+      await updateUser({
+        id: user.id,
+        user_id: user.user_id,
+        email: user.email,
+        name,
+        driver_license: driveLicense,
+        avatar,
+        token: user.token,
+      });
+
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Tudo certo',
+        text2: 'Perfil atualizado com sucesso',
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Yup.ValidationError) {
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Opsss 😅',
+          text2: error.message,
+        });
+      } else {
+        Alert.alert('Erro ao atualizar o perfil');
+      }
     }
   }
 
@@ -111,20 +158,21 @@ function Profile() {
             {option === 'dataEdit' ? (
               <Section>
                 <Input
-                  defaultValue={user.name}
+                  defaultValue={name}
                   onChangeText={setName}
                   iconName="user"
                   placeholder="Nome"
                   autoCorrect={false}
                 />
                 <Input
-                  defaultValue={user.email}
+                  defaultValue={email}
+                  onChangeText={setEmail}
                   iconName="mail"
                   editable={false}
                   autoCorrect={false}
                 />
                 <Input
-                  defaultValue={user.driver_license}
+                  defaultValue={driveLicense}
                   onChangeText={setDriverLicense}
                   iconName="credit-card"
                   placeholder="CNH"
@@ -138,6 +186,8 @@ function Profile() {
                 <PasswordInput iconName="lock" placeholder="Repetir senha" />
               </Section>
             )}
+
+            <Button title="Salvar alterações" onPress={handleProfileUpdate} />
           </Content>
         </Container>
       </TouchableWithoutFeedback>

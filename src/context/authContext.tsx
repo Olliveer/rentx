@@ -22,6 +22,7 @@ type AuthContextData = {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): Promise<void>;
+  updateUser(user: User): Promise<void>;
 };
 
 type AuthProviderProps = {
@@ -78,6 +79,25 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function updateUser(user: User) {
+    try {
+      const userCollection = database.get<UserModel>('users');
+      await database.write(async () => {
+        const userSelected = await userCollection.find(user.id);
+        await userSelected.update((userData) => {
+          userData.name = user.name;
+          userData.email = user.email;
+          userData.driver_license = user.driver_license;
+          userData.avatar = user.avatar;
+        });
+      });
+
+      setData(user);
+    } catch (error: any | unknown) {
+      throw new Error('Opsss! Something went wrong', error);
+    }
+  }
+
   useEffect(() => {
     async function loadUserData() {
       const usgerCollection = database.get<UserModel>('users');
@@ -96,7 +116,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data, signIn, signOut }}>
+    <AuthContext.Provider value={{ user: data, signIn, signOut, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
