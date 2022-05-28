@@ -1,94 +1,113 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import Logo from '../../assets/logo.svg';
-import { Car } from '../../components/Car';
-import { Load } from '../../components/Load';
-import { CarDTO } from '../../dtos/CarDTO';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { synchronize } from '@nozbe/watermelondb/sync';
+import { database } from '../../database';
 import { api } from '../../services/api';
-import { CarList, Container, Header, HeaderContent, TotalCars } from './styles';
 
-// const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
+import Logo from '../../assets/logo.svg';
+import { CarDTO } from '../../dtos/CarDTO';
+
+import { Car } from '../../components/Car';
+import { Car as ModelCar } from '../../database/models/Car';
+
+import { Container, Header, HeaderContent, TotalCars, CarList } from './styles';
+import { Load } from '../../components/Load';
 
 export function Home() {
-  const navigation = useNavigation();
+  const [cars, setCars] = useState<ModelCar[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cars, setCars] = useState<CarDTO[]>();
 
-  // const postitonY = useSharedValue(0);
-  // const postitonX = useSharedValue(0);
-
-  // const myCarsButtonStyle = useAnimatedStyle(() => {
-  //   return {
-  //     transform: [
-  //       {
-  //         translateX: postitonX.value,
-  //       },
-  //       {
-  //         translateY: postitonY.value,
-  //       },
-  //     ],
-  //   };
-  // });
-
-  // const onGestureEvent = useAnimatedGestureHandler({
-  //   onStart(_, ctx: any) {
-  //     ctx.positionX = postitonX.value;
-  //     ctx.positionY = postitonY.value;
-  //   },
-  //   onActive(event, ctx: any) {
-  //     postitonX.value = ctx.positionX + event.translationX;
-  //     postitonY.value = ctx.positionY + event.translationY;
-  //   },
-  //   onEnd() {
-  //     postitonX.value = withSpring(0);
-  //     postitonY.value = withSpring(0);
-  //   },
-  // });
+  const netInfo = useNetInfo();
+  const navigation = useNavigation();
+  const synchronizing = useRef(false);
 
   function handleCarDetails(car: CarDTO) {
-    navigation.navigate('CarDetails', { car });
+    navigation.navigate('CarDetails', { carId: car.id });
   }
 
-  // function handleOpenMyCars() {
-  //   navigation.navigate('MyCars');
-  // }
+  async function offlineSynchronize() {
+    await synchronize({
+      database,
+      pullChanges: async ({ lastPulledAt }) => {
+        const response = await api.get(
+          `cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`,
+        );
+
+        const { changes, latestVersion } = response.data;
+
+        return { changes, timestamp: latestVersion };
+      },
+
+      pushChanges: async ({ changes }) => {
+        const user = changes.users;
+        if (user) {
+          await api.post('/users/sync', user);
+        }
+      },
+    });
+
+    await fetchCars();
+  }
+
+  async function fetchCars() {
+    try {
+      const carCollection = database.get<ModelCar>('cars');
+      const cars = await carCollection.query().fetch();
+
+      setCars(cars);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    let isMonted = true;
-    async function loadCars() {
-      try {
-        const response = await api.get('/cars');
-        if (isMonted) {
-          setCars(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        if (isMonted) {
-          setLoading(false);
-        }
-      }
+    let isMounted = true;
+
+    if (isMounted) {
+      fetchCars();
     }
 
-    loadCars();
     return () => {
-      isMonted = false;
+      isMounted = false;
     };
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const syncChanges = async () => {
+        if (netInfo.isConnected && !synchronizing.current) {
+          synchronizing.current = true;
+
+          try {
+            await offlineSynchronize();
+          } catch (err) {
+            console.log(err);
+          } finally {
+            synchronizing.current = false;
+          }
+        }
+      };
+
+      syncChanges();
+    }, [netInfo.isConnected]),
+  );
 
   return (
     <Container>
       <StatusBar
         barStyle="light-content"
-        translucent
         backgroundColor="transparent"
+        translucent
       />
       <Header>
         <HeaderContent>
           <Logo width={RFValue(108)} height={RFValue(12)} />
-          {!loading && <TotalCars>Total de {cars?.length} carros</TotalCars>}
+          {!loading && <TotalCars>Total de {cars.length} carros</TotalCars>}
         </HeaderContent>
       </Header>
 
@@ -103,40 +122,6 @@ export function Home() {
           )}
         />
       )}
-
-      {/* <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <Animated.View
-          style={[
-            myCarsButtonStyle,
-            {
-              position: 'absolute',
-              bottom: 14,
-              right: 22,
-            },
-          ]}
-        >
-          <ButtonAnimated
-            onPress={handleOpenMyCars}
-            style={[styles.button, { backgroundColor: theme.colors.main }]}
-          >
-            <Ionicons
-              name="ios-car-sport"
-              size={32}
-              color={theme.colors.shape}
-            />
-          </ButtonAnimated>
-        </Animated.View>
-      </PanGestureHandler> */}
     </Container>
   );
 }
-
-// const styles = StyleSheet.create({
-//   button: {
-//     width: 60,
-//     height: 60,
-//     borderRadius: 30,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-// });

@@ -3,7 +3,7 @@ import { carSchema } from './carSchema';
 import { userSchema } from './userSchema';
 
 const schemas = appSchema({
-  version: 2.1,
+  version: 1,
   tables: [userSchema, carSchema],
 });
 

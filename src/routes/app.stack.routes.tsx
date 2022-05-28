@@ -12,7 +12,7 @@ import { ScheduleDetails } from '../screens/ScheduleDetails';
 export type RootStackParamList = {
   Home: undefined;
   SignIn: undefined;
-  CarDetails: { car: CarDTO };
+  CarDetails: { carId: string };
   Confirmation: { title: string; message: string; nextScreenRoute: string };
   Schedule: { car: CarDTO };
   ScheduleDetails: { car: CarDTO; dates: string[] };

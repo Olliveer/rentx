@@ -47,12 +47,12 @@ function AuthProvider({ children }: AuthProviderProps) {
       const userCollection = database.get<UserModel>('users');
       await database.write(async () => {
         const dataUser = await userCollection.create((newUser) => {
-          (newUser.user_id = user.id),
-            (newUser.name = user.name),
-            (newUser.email = user.email),
-            (newUser.driver_license = user.driver_license),
-            (newUser.avatar = user.avatar),
-            (newUser.token = token);
+          newUser.user_id = user.id;
+          newUser.name = user.name;
+          newUser.email = user.email;
+          newUser.driver_license = user.driver_license;
+          newUser.avatar = user.avatar;
+          newUser.token = token;
         });
 
         const userData = dataUser._raw as unknown as User;
@@ -60,6 +60,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       });
     } catch (error) {
       if (error instanceof Error) {
+        console.log('login', error);
         throw new Error('Opsss! Something went wrong', error);
       }
     }
@@ -86,7 +87,6 @@ function AuthProvider({ children }: AuthProviderProps) {
         const userSelected = await userCollection.find(user.id);
         await userSelected.update((userData) => {
           userData.name = user.name;
-          userData.email = user.email;
           userData.driver_license = user.driver_license;
           userData.avatar = user.avatar;
         });
@@ -100,8 +100,8 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     async function loadUserData() {
-      const usgerCollection = database.get<UserModel>('users');
-      const response = await usgerCollection.query().fetch();
+      const userCollection = database.get<UserModel>('users');
+      const response = await userCollection.query().fetch();
 
       if (response.length > 0) {
         const userData = response[0]._raw as unknown as User;
