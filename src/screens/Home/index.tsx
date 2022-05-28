@@ -4,6 +4,7 @@ import { StatusBar } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { synchronize } from '@nozbe/watermelondb/sync';
+
 import { database } from '../../database';
 import { api } from '../../services/api';
 
@@ -12,6 +13,7 @@ import { CarDTO } from '../../dtos/CarDTO';
 
 import { Car } from '../../components/Car';
 import { Car as ModelCar } from '../../database/models/Car';
+import { LoadAnimation } from '../../components/LoadAnimation';
 
 import { Container, Header, HeaderContent, TotalCars, CarList } from './styles';
 import { Load } from '../../components/Load';
@@ -40,7 +42,6 @@ export function Home() {
 
         return { changes, timestamp: latestVersion };
       },
-
       pushChanges: async ({ changes }) => {
         const user = changes.users;
         if (user) {

@@ -94,8 +94,17 @@ const Footer = styled.View`
   padding: 24px 24px ${getBottomSpace() + 24}px;
 `;
 
+const OfflineInfo = styled.Text`
+  color: ${({ theme }) => theme.colors.main};
+  font-family: ${({ theme }) => theme.fonts.secondary_500};
+  font-size: ${RFValue(10)}px;
+
+  text-align: center;
+`;
+
 export {
   Container,
+  OfflineInfo,
   Header,
   CarImages,
   Details,
